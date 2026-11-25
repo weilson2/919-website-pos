@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#152238" />
+  <link rel="icon" href="data:," />
+  <title>919 POS · Admin Workspace</title>
+  <link rel="stylesheet" href="admin.css?v=20260901-prod3" />
+</head>
+<body class="session-loading">
+  <div class="admin-app">
+    <aside class="admin-sidebar" id="adminSidebar">
+      <div class="admin-brand"><span>919</span><div><strong id="adminShopName">919 Restaurant</strong><small>MANAGEMENT SYSTEM</small></div></div>
+      <div class="workspace-identity admin-mode" id="managementWorkspaceIdentity"><span id="managementModeLetter">A</span><div><small>ACTIVE WORKSPACE</small><strong id="managementModeLabel">Admin · Full access</strong></div></div>
+      <nav class="admin-nav" aria-label="Admin modules">
+        <span class="nav-section">BUSINESS</span>
+        <button class="active" data-admin-page="overview" type="button"><i>⌂</i><span><b>Overview</b><small>Business control center</small></span></button>
+        <button data-admin-page="accounting" type="button"><i>RM</i><span><b>Accounting</b><small>Profit and full ledger</small></span></button>
+        <button data-admin-page="cash" type="button"><i>▣</i><span><b>Cash Center</b><small>Open, entries, close day</small></span></button>
+        <button data-admin-page="rent" type="button"><i>▤</i><span><b>Rent & Stalls</b><small>Tenants and collections</small></span></button>
+        <button data-admin-page="stock" type="button"><i>□</i><span><b>Stock & Items</b><small>Inventory and movements</small></span></button>
+        <span class="nav-section">CONTROL</span>
+        <button data-admin-page="sales" type="button"><i>▥</i><span><b>Sales & Refunds</b><small>Receipts and corrections</small></span></button>
+        <button data-admin-page="payroll" type="button"><i>PAY</i><span><b>Payroll</b><small>Employees and salary slips</small></span></button>
+        <button data-admin-page="reports" type="button"><i>↗</i><span><b>Reports & Exports</b><small>Daily and accountant files</small></span></button>
+        <button data-admin-page="staff" type="button"><i>♙</i><span><b>Staff & Access</b><small>Roles, PINs, permissions</small></span></button>
+        <button data-admin-page="setup" type="button"><i>⚙</i><span><b>Menu & Tables</b><small>Categories and table setup</small></span></button>
+        <button data-admin-page="system" type="button"><i>✓</i><span><b>System & Audit</b><small>Database, backup, settings</small></span></button>
+      </nav>
+      <div class="sidebar-footer"><button id="returnToPos" type="button">← Return to POS</button><button id="adminLogout" class="quiet" type="button">Log out</button></div>
+    </aside>
+
+    <main class="admin-main">
+      <header class="admin-topbar">
+        <button class="mobile-menu-button" id="mobileMenuButton" type="button" aria-label="Open admin menu">☰</button>
+        <div class="page-heading"><span id="pageEyebrow">ADMIN CONTROL CENTER</span><h1 id="pageTitle">Business overview</h1><p id="pageDescription">Live control of today’s shop activity and management modules.</p></div>
+        <div class="admin-top-actions">
+          <div class="top-date"><small>BUSINESS DATE</small><strong id="adminBusinessDate">—</strong></div>
+          <button class="session-person" id="sessionPerson" type="button"><span id="sessionAvatar">AD</span><span><small id="sessionRole">ADMIN</small><strong id="sessionName">Admin</strong></span><b>⌄</b></button>
+        </div>
+      </header>
+      <section class="admin-content" id="adminContent"><div class="page-loading"><span></span><p>Loading admin workspace…</p></div></section>
+    </main>
+  </div>
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+  <dialog class="admin-dialog" id="adminModal" aria-labelledby="adminModalTitle">
+    <header><div><small id="adminModalEyebrow">ADMIN ACTION</small><h2 id="adminModalTitle">Action</h2></div><button type="button" id="adminModalClose" aria-label="Close">×</button></header>
+    <div class="admin-dialog-body" id="adminModalBody"></div>
+  </dialog>
+
+  <div class="admin-toast" id="adminToast" role="status" aria-live="polite"></div>
+  <script src="auth.js?v=20260901-prod2"></script>
+  <script src="admin.js?v=20261111"></script>
+</body>
+</html>

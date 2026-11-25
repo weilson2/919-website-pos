@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#152238" />
+  <link rel="icon" href="data:," />
+  <title>919 POS · Choose Workspace</title>
+  <link rel="stylesheet" href="login.css?v=20260831-prod1" />
+</head>
+<body>
+  <main class="login-shell">
+    <section class="login-brand-panel">
+      <div class="brand-lockup"><span>919</span><div><strong id="loginShopName">919 Restaurant</strong><small>POINT OF SALE</small></div></div>
+      <div class="brand-message">
+        <span class="eyebrow">ROLE-AWARE ACCESS</span>
+        <h1>One system.<br />Three clear workspaces.</h1>
+        <p>The workspace controls what this station can do. A payment PIN separately records who received the money.</p>
+      </div>
+      <div class="login-system-status"><i></i><span><strong>Local database online</strong><small id="databaseLabel">Connecting to pos.db…</small></span></div>
+    </section>
+
+    <section class="login-main-panel">
+      <header class="login-header">
+        <div><span class="eyebrow">START SESSION</span><h2>Choose this station’s workspace</h2><p>You will always see the active workspace in the top bar after login.</p></div>
+        <div class="business-date"><small>BUSINESS DATE</small><strong id="loginBusinessDate">—</strong></div>
+      </header>
+
+      <div class="workspace-options" id="workspaceOptions">
+        <button class="workspace-option order" type="button" data-mode="order">
+          <span class="mode-icon">O</span><span class="mode-copy"><strong>Order Only</strong><small>Waiter or ordering station</small></span><span class="mode-check">✓</span>
+          <ul><li>Tables and product ordering</li><li>Hold and print check bill</li><li>No payment or business totals</li></ul>
+        </button>
+        <button class="workspace-option cashier active" type="button" data-mode="cashier">
+          <span class="mode-icon">C</span><span class="mode-copy"><strong>Cashier</strong><small>Counter and payment station</small></span><span class="mode-check">✓</span>
+          <ul><li>All ordering functions</li><li>Cash and QR payment</li><li>Cash, rent, and stock access</li></ul>
+        </button>
+        <button class="workspace-option admin" type="button" data-mode="admin">
+          <span class="mode-icon">A</span><span class="mode-copy"><strong>Admin</strong><small>Remote owner and management</small></span><span class="mode-check">✓</span>
+          <ul><li>Accounting, reports, history</li><li>Stock, rent, staff, settings</li><li>No table or order-taking screen</li></ul>
+        </button>
+      </div>
+
+      <section class="pin-login-card">
+        <div class="pin-login-copy"><span><small id="selectedModeLabel">CASHIER WORKSPACE</small><strong>Enter your staff PIN</strong></span><p>The PIN identifies the person opening this workspace.</p></div>
+        <label class="admin-password-field" id="adminPasswordGroup" for="adminPassword" hidden><span>Admin password</span><input id="adminPassword" type="password" autocomplete="current-password" placeholder="Strong remote-admin password" /></label>
+        <div class="pin-login-form">
+          <input id="loginPin" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="8" autocomplete="off" aria-label="Staff PIN" />
+          <button id="loginButton" type="button">Open Cashier</button>
+        </div>
+        <p class="login-error" id="loginError" role="alert" aria-live="polite"></p>
+        <div class="login-keypad" id="loginKeypad">
+          <button type="button" data-digit="1">1</button><button type="button" data-digit="2">2</button><button type="button" data-digit="3">3</button>
+          <button type="button" data-digit="4">4</button><button type="button" data-digit="5">5</button><button type="button" data-digit="6">6</button>
+          <button type="button" data-digit="7">7</button><button type="button" data-digit="8">8</button><button type="button" data-digit="9">9</button>
+          <button class="key-action" type="button" data-action="clear">Clear</button><button type="button" data-digit="0">0</button><button class="key-action" type="button" data-action="backspace" aria-label="Delete last digit">⌫</button>
+        </div>
+      </section>
+    </section>
+  </main>
+  <script src="auth.js?v=20260831-prod1"></script>
+  <script src="login.js?v=20260831-prod1"></script>
+</body>
+</html>

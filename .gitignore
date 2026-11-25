@@ -1,0 +1,26 @@
+.venv/
+__pycache__/
+.pytest_cache/
+build/
+dist/
+backups/
+*.egg-info/
+*.db
+*.db-*
+*.sqlite
+*.sqlite-*
+*.sqlite3
+*.sqlite3-*
+*.log
+.env
+.env.*
+!.env.example
+/source/web_prototype/uploads/
+
+# Local test scripts: keep on this PC, exclude from commits.
+/source/tests/
+/source/tools/test_web_api.py
+/source/tools/test_web_concurrency.py
+/source/tools/test_web_restart_recovery.py
+/source/tools/test_web_security.py
+/source/tools/test_web_ui.js

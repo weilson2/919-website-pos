@@ -1,0 +1,459 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#152238" />
+  <link rel="icon" href="data:," />
+  <title>919 Restaurant POS</title>
+  <link rel="stylesheet" href="styles.css?v=20260831-prod2" />
+</head>
+<body class="session-loading">
+  <div class="live-banner">
+    <span>LIVE DATABASE</span>
+    <strong>Orders, payments, stock, cashflow, and receipts save together in pos.db</strong>
+  </div>
+
+  <main class="app-shell">
+    <header class="topbar">
+      <div class="brand-block">
+        <div class="brand-mark">919</div>
+        <div>
+          <h1 id="posShopName">919 Restaurant</h1>
+          <p data-i18n="pointOfSale">Point of Sale</p>
+        </div>
+      </div>
+
+      <div class="shift-context">
+        <button class="context-button" id="tableButton" type="button">
+          <span class="context-icon">▦</span>
+          <span>
+            <small data-i18n="currentTable">Current table</small>
+            <strong><span data-i18n="table">Table</span> <span id="activeTable">15</span></strong>
+          </span>
+        </button>
+        <div class="business-date">
+          <small data-i18n="businessDate">Business date</small>
+          <strong id="businessDate">26 Aug 2026</strong>
+        </div>
+      </div>
+
+      <div class="top-actions">
+        <div class="workspace-mode-badge cashier" id="workspaceModeBadge"><span>C</span><b>CASHIER</b></div>
+        <div class="online-pill"><span></span><b>ONLINE</b></div>
+        <button class="utility-button cashier-shortcut cash-shortcut" data-tool-page="cash" type="button" aria-label="Open Cash Center"><span aria-hidden="true">RM</span><b>Cash</b></button>
+        <button class="utility-button cashier-shortcut rent-shortcut" data-tool-page="rent" type="button" aria-label="Open Rent and Stalls"><span aria-hidden="true">▤</span><b>Rent</b></button>
+        <button class="utility-button stock-shortcut" data-tool-page="stock" type="button">Stock</button>
+        <button class="language-button" id="languageButton" type="button">中文</button>
+        <button class="staff-button" id="ownerButton" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="ownerDrawer">
+          <span class="avatar" id="activeStaffAvatar">FU</span>
+          <span><small id="activeStaffRole" data-i18n="cashier">Cashier</small><strong id="activeStaffName">Fu</strong></span>
+          <span class="chevron">⌄</span>
+        </button>
+      </div>
+    </header>
+
+    <section class="table-home" id="tableHome">
+      <div class="table-home-heading">
+        <div>
+          <span class="section-eyebrow" data-i18n="tableLayout">TABLE LAYOUT</span>
+          <h2 data-i18n="selectTableStart">Select a table to start an order</h2>
+          <p data-i18n="tableHomeHint">Free tables start a new order. Unpaid tables resume their existing bill.</p>
+        </div>
+        <div class="table-home-actions">
+          <button class="refresh-table-button" id="refreshTablesButton" type="button">↻ <span data-i18n="refresh">Refresh</span></button>
+          <button class="new-order-button" id="newOrderButton" type="button">＋ <span data-i18n="newOrder">New order</span></button>
+        </div>
+      </div>
+
+      <div class="table-stat-grid">
+        <article><span class="stat-icon available">✓</span><div><strong id="availableCount">7</strong><small data-i18n="available">Free</small></div></article>
+        <article><span class="stat-icon unpaid">!</span><div><strong id="unpaidCount">5</strong><small data-i18n="unpaidOrders">Unpaid tables</small></div></article>
+        <article><span class="stat-icon total" id="totalCurrencyIcon">RM</span><div><strong id="heldTotal">RM 115.40</strong><small data-i18n="unpaidTotal">Unpaid total</small></div></article>
+      </div>
+
+      <div class="table-home-content">
+        <section class="floor-card">
+          <div class="floor-card-header">
+            <div><h3 data-i18n="mainDining">Main dining area</h3><p>Shop 1 · Ground floor</p></div>
+            <div class="status-legend compact">
+              <span><i class="free"></i><span data-i18n="available">Free</span></span>
+              <span><i class="unpaid"></i><span data-i18n="unpaid">Unpaid</span></span>
+            </div>
+          </div>
+          <div id="homeTableGrid" class="home-table-grid"></div>
+        </section>
+
+        <aside class="held-orders-card">
+          <div class="held-card-header"><div><span class="section-eyebrow" data-i18n="needsAttention">NEEDS ATTENTION</span><h3 data-i18n="unpaidOrders">Unpaid tables</h3></div><span class="held-count" id="heldCount">5</span></div>
+          <div id="heldOrderList" class="held-order-list"></div>
+          <button class="view-held-button" id="viewHeldButton" type="button"><span data-i18n="viewHeldOrders">View all unpaid tables</span><b>→</b></button>
+          <button class="rent-reminder" id="rentReminder" data-tool-page="rent" type="button" hidden><span>!</span><p><strong id="rentReminderTitle">Rent payment due</strong><small id="rentReminderDetail">Open the Rent tab to collect</small></p><b>→</b></button>
+          <div class="shift-note"><span>i</span><p><strong data-i18n="businessDay">Business day</strong><small id="businessWindowLabel">06:00 today - 05:59 tomorrow</small></p></div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="workspace hidden" id="posWorkspace">
+      <aside class="category-panel">
+        <div class="panel-title">
+          <span data-i18n="categories">Categories</span>
+          <small id="categoryCount">7</small>
+        </div>
+        <nav id="categoryList" class="category-list" aria-label="Product categories"></nav>
+        <button class="main-tables-button" id="mainTablesButton" type="button">
+          <span>▦</span>
+          <span><strong data-i18n="mainTables">Main Tables</strong><small id="mainTableSummary">5 unpaid · 7 free</small></span>
+        </button>
+      </aside>
+
+      <section class="product-area">
+        <div class="product-toolbar">
+          <label class="search-box">
+            <span>⌕</span>
+            <input id="productSearch" type="search" placeholder="Search products..." autocomplete="off" />
+            <kbd>F2</kbd>
+          </label>
+          <div class="product-summary">
+            <span class="live-dot"></span>
+            <span data-i18n="liveStock">Live stock</span>
+            <small id="refreshTime">updated just now</small>
+          </div>
+        </div>
+
+        <div class="product-heading">
+          <div>
+            <h2 id="productTitle">All products</h2>
+            <p id="productSubtitle">Tap a product to add it to the current order</p>
+          </div>
+          <button class="icon-button" id="refreshProducts" type="button" aria-label="Refresh products">↻</button>
+        </div>
+
+        <div id="productGrid" class="product-grid"></div>
+
+        <footer class="table-strip">
+          <div class="strip-heading">
+            <span data-i18n="recentTables">Recent tables</span>
+            <button id="viewAllTables" type="button" data-i18n="viewAll">View all</button>
+          </div>
+          <div id="recentTables" class="recent-tables"></div>
+        </footer>
+      </section>
+
+      <aside class="order-panel">
+        <div class="order-header">
+          <div>
+            <p data-i18n="currentOrder">CURRENT ORDER</p>
+            <h2><span data-i18n="table">Table</span> <span id="orderTable">15</span></h2>
+            <span id="orderSaveStatus" class="order-save-status saved" role="status" aria-live="polite">Saved</span>
+          </div>
+          <div class="order-number">
+            <small data-i18n="order">Order</small>
+            <strong id="orderNumber">#0048</strong>
+          </div>
+        </div>
+
+        <div class="order-columns">
+          <span data-i18n="item">Item</span>
+          <span data-i18n="qty">Qty</span>
+          <span data-i18n="amount">Amount</span>
+        </div>
+
+        <div id="cartList" class="cart-list"></div>
+
+        <div class="order-note">
+          <button id="addNoteButton" type="button"><span>＋</span><span id="orderNoteLabel" data-i18n="addOrderNote">Add order note</span></button>
+        </div>
+
+        <div class="totals-card">
+          <div><span data-i18n="subtotal">Subtotal</span><strong id="subtotalValue">RM 0.00</strong></div>
+          <div><span data-i18n="discount">Discount</span><button id="discountButton" type="button">Add</button></div>
+          <div class="grand-total"><span data-i18n="total">TOTAL</span><strong id="totalValue">RM 0.00</strong></div>
+        </div>
+
+        <div class="checkout-actions">
+          <div class="checkout-section-label" data-i18n="orderActions">ORDER ACTIONS</div>
+          <div class="order-action-grid">
+            <button class="secondary-action" id="clearButton" type="button">
+              <span>×</span><b data-i18n="clear">Clear</b>
+            </button>
+            <button class="secondary-action hold-button" id="holdButton" type="button">
+              <span>Ⅱ</span><b data-i18n="hold">Hold</b>
+            </button>
+            <button class="secondary-action print-bill-button" id="printBillButton" type="button">
+              <span>▤</span><b data-i18n="printBill">Print bill</b><kbd>F3</kbd>
+            </button>
+          </div>
+          <div class="checkout-section-label payment-label" data-i18n="takePayment">TAKE PAYMENT</div>
+          <div class="payment-action-grid">
+            <button class="payment-button cash-payment" data-payment="Cash" type="button">
+              <span class="payment-method-icon" id="cashPaymentCurrency">RM</span><span><small data-i18n="payWith">PAY WITH</small><strong data-i18n="cash">CASH</strong></span><kbd>F1</kbd>
+            </button>
+            <button class="payment-button qr-payment" data-payment="QR" type="button">
+              <span class="payment-method-icon">▦</span><span><small data-i18n="payWith">PAY WITH</small><strong>QR</strong></span>
+              <kbd>F4</kbd>
+            </button>
+          </div>
+        </div>
+      </aside>
+    </section>
+  </main>
+
+  <div class="drawer-backdrop" id="drawerBackdrop"></div>
+  <aside class="owner-drawer" id="ownerDrawer" aria-hidden="true" aria-labelledby="workspaceDrawerTitle">
+    <div class="drawer-header">
+      <div>
+        <small id="workspaceDrawerEyebrow">CASHIER WORKSPACE</small>
+        <h2 id="workspaceDrawerTitle">Cashier tools</h2>
+      </div>
+      <button id="closeOwnerDrawer" type="button" aria-label="Close workspace menu">×</button>
+    </div>
+    <p class="drawer-copy" id="workspaceDrawerCopy">Open saved receipts and daily cashier tools without leaving the POS workflow.</p>
+    <div class="owner-menu" id="workspaceMenu"></div>
+    <div class="drawer-footer">
+      <span><i></i><strong id="drawerSessionLabel">Signed in</strong></span>
+      <button type="button" id="drawerLogout">Log out of this device</button>
+    </div>
+  </aside>
+
+  <dialog id="tableDialog" class="app-dialog table-dialog">
+    <div class="dialog-heading">
+      <div><small>TABLE LAYOUT</small><h2>Select a table</h2></div>
+      <button class="dialog-close" type="button" data-close-dialog>×</button>
+    </div>
+    <div id="tableGrid" class="table-grid"></div>
+    <div class="status-legend">
+      <span><i class="free"></i>Free</span>
+      <span><i class="unpaid"></i>Unpaid</span>
+    </div>
+  </dialog>
+
+  <dialog id="cashierPinDialog" class="app-dialog cashier-pin-dialog" aria-labelledby="cashierPinTitle">
+    <button class="dialog-close floating" type="button" data-close-dialog aria-label="Close cashier PIN">×</button>
+    <div class="pin-lock-icon">PIN</div>
+    <small class="pin-eyebrow">PAYMENT IDENTIFICATION</small>
+    <h2 id="cashierPinTitle">Who received this payment?</h2>
+    <p class="pin-copy">Enter your short cashier PIN. The verified name will be saved with this sale.</p>
+
+    <div class="pin-payment-summary">
+      <span><small id="pinPaymentMethod">CASH PAYMENT</small><strong id="pinPaymentContext">Table 15 · Order #0048</strong></span>
+      <b id="pinPaymentTotal">RM 0.00</b>
+    </div>
+
+    <label class="pin-input-label" for="staffPinInput">Cashier PIN</label>
+    <input id="staffPinInput" class="staff-pin-input" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="8" autocomplete="off" aria-describedby="staffPinError" />
+    <p class="staff-pin-error" id="staffPinError" role="alert" aria-live="polite"></p>
+
+    <div class="pin-keypad" aria-label="Numeric PIN keypad">
+      <button type="button" data-pin-digit="1">1</button><button type="button" data-pin-digit="2">2</button><button type="button" data-pin-digit="3">3</button>
+      <button type="button" data-pin-digit="4">4</button><button type="button" data-pin-digit="5">5</button><button type="button" data-pin-digit="6">6</button>
+      <button type="button" data-pin-digit="7">7</button><button type="button" data-pin-digit="8">8</button><button type="button" data-pin-digit="9">9</button>
+      <button class="pin-key-action" type="button" data-pin-action="clear">Clear</button><button type="button" data-pin-digit="0">0</button><button class="pin-key-action" type="button" data-pin-action="backspace" aria-label="Delete last digit">⌫</button>
+    </div>
+
+    <button class="verify-staff-pin" id="verifyStaffPin" type="button">Continue to payment</button>
+    <p class="pin-verification-hint"><b>Staff verification</b><span>Use your own PIN. Your name will be saved with this payment.</span></p>
+  </dialog>
+
+  <dialog id="paymentDialog" class="app-dialog payment-dialog" aria-labelledby="paymentTitle">
+    <button class="dialog-close floating" type="button" data-close-dialog aria-label="Close payment">×</button>
+    <div class="payment-icon" id="paymentIcon">RM</div>
+    <small id="paymentEyebrow">CASH PAYMENT</small>
+    <h2 id="paymentTitle">Collect RM 0.00</h2>
+    <p id="paymentCopy">Enter the amount received from the customer.</p>
+    <div class="payment-cashier-row">
+      <span class="payment-cashier-avatar" id="paymentCashierAvatar">FU</span>
+      <span><small id="paymentStaffLabel">PAYMENT RECEIVED BY</small><strong id="paymentCashierName">Fu</strong></span>
+      <b id="paymentCashierId">FU</b>
+    </div>
+    <label id="cashReceivedGroup" class="amount-field">
+      <span>Cash received</span>
+      <div><b id="cashReceivedCurrency">RM</b><input id="cashReceived" inputmode="decimal" value="20.00" /></div>
+    </label>
+    <div class="change-row" id="changeRow"><span>Change</span><strong id="changeValue">RM 0.00</strong></div>
+    <div class="qr-confirm-panel" id="qrConfirmPanel" hidden>
+      <span class="qr-confirm-mark">✓</span>
+      <span><strong id="paymentNoAmountTitle">No amount entry needed</strong><small id="paymentNoAmountCopy">Verify the payment notification, then confirm below.</small></span>
+    </div>
+    <button class="confirm-payment" id="confirmPayment" type="button">Confirm payment</button>
+    <p class="payment-safety" id="paymentSafety">Confirm only after payment has been received.</p>
+  </dialog>
+
+  <dialog id="orderNoteDialog" class="app-dialog form-dialog" aria-labelledby="orderNoteTitle">
+    <div class="dialog-heading">
+      <div><small>ORDER DETAILS</small><h2 id="orderNoteTitle">Order note</h2></div>
+      <button class="dialog-close" type="button" data-close-dialog aria-label="Close order note">×</button>
+    </div>
+    <div class="form-dialog-body">
+      <p>Add kitchen instructions or a customer reference. This note is saved with the unpaid order and final sale.</p>
+      <label class="dialog-field" for="orderNoteInput"><span>Note</span><textarea id="orderNoteInput" maxlength="500" rows="5" placeholder="Example: less sugar, customer name Lim"></textarea></label>
+      <div class="dialog-field-meta"><span id="orderNoteCount">0 / 500</span><button id="clearOrderNote" type="button">Clear note</button></div>
+    </div>
+    <div class="form-dialog-actions"><button type="button" data-close-dialog>Cancel</button><button id="saveOrderNote" class="primary" type="button">Save note</button></div>
+  </dialog>
+
+  <dialog id="discountDialog" class="app-dialog form-dialog" aria-labelledby="discountTitle">
+    <div class="dialog-heading">
+      <div><small>ORDER ADJUSTMENT</small><h2 id="discountTitle">Apply discount</h2></div>
+      <button class="dialog-close" type="button" data-close-dialog aria-label="Close discount">×</button>
+    </div>
+    <div class="form-dialog-body">
+      <p>Enter a fixed Ringgit discount. The total cannot go below RM 0.00.</p>
+      <div class="discount-subtotal"><span>Current subtotal</span><strong id="discountSubtotal">RM 0.00</strong></div>
+      <label class="dialog-field amount-dialog-field" for="discountInput"><span>Discount amount</span><div><b id="discountCurrency">RM</b><input id="discountInput" inputmode="decimal" value="0.00" autocomplete="off" /></div></label>
+      <div class="discount-quick-buttons"><button type="button" data-discount-amount="0">No discount</button><button type="button" data-discount-amount="1">RM 1</button><button type="button" data-discount-amount="2">RM 2</button><button type="button" data-discount-amount="5">RM 5</button></div>
+      <p class="dialog-error" id="discountError" role="alert" aria-live="polite"></p>
+    </div>
+    <div class="form-dialog-actions"><button type="button" data-close-dialog>Cancel</button><button id="saveDiscount" class="primary" type="button">Apply discount</button></div>
+  </dialog>
+
+  <dialog id="focDialog" class="app-dialog form-dialog" aria-labelledby="focTitle">
+    <div class="dialog-heading">
+      <div><small>ZERO-CHARGE REPLACEMENT</small><h2 id="focTitle">Add FOC replacement</h2></div>
+      <button class="dialog-close" type="button" data-close-dialog aria-label="Close FOC replacement">×</button>
+    </div>
+    <div class="form-dialog-body">
+      <p>The original item stays charged. This adds a separate RM 0.00 item, deducts replacement stock, and records the reason for Admin and Accounting.</p>
+      <div class="foc-item-summary"><span>Replacement item</span><strong id="focItemName">Coconut</strong><small id="focNormalPrice">Normal price RM 0.00</small></div>
+      <div class="foc-form-grid">
+        <label class="dialog-field" for="focQuantity"><span>Replacement quantity</span><input id="focQuantity" type="number" min="1" max="99" step="1" value="1" inputmode="numeric" /></label>
+        <label class="dialog-field" for="focReason"><span>Reason</span><select id="focReason">
+          <option>Replacement — not fresh / spoiled</option>
+          <option>Replacement — damaged / broken</option>
+          <option>Replacement — wrong item served</option>
+          <option>Service recovery / complimentary</option>
+          <option>Other</option>
+        </select></label>
+      </div>
+      <label class="dialog-field" for="focDetails"><span>Details (required for Other)</span><textarea id="focDetails" maxlength="180" rows="3" placeholder="Example: coconut tasted sour; replaced at customer request"></textarea></label>
+      <p class="dialog-error" id="focError" role="alert" aria-live="polite"></p>
+    </div>
+    <div class="form-dialog-actions"><button type="button" data-close-dialog>Cancel</button><button id="saveFocReplacement" class="primary foc-primary" type="button">Add FOC replacement</button></div>
+  </dialog>
+
+  <dialog id="billDialog" class="app-dialog bill-dialog">
+    <div class="dialog-heading bill-dialog-heading">
+      <div><small>BEFORE PAYMENT</small><h2>Customer check bill</h2></div>
+      <button class="dialog-close" type="button" data-close-dialog>×</button>
+    </div>
+    <div class="bill-preview-shell">
+      <article class="print-receipt" id="printReceipt">
+        <header class="receipt-header">
+          <strong id="checkBillShopName">919 RESTAURANT</strong>
+          <span>Customer check bill</span>
+          <b>NOT PAID</b>
+        </header>
+        <div class="receipt-meta">
+          <div><span id="receiptTable">Table 15</span><strong id="receiptOrder">Order #0048</strong></div>
+          <time id="receiptDate"></time>
+        </div>
+        <div class="receipt-columns"><span>Item</span><span>Qty</span><span>Amount</span></div>
+        <div id="receiptItems" class="receipt-items"></div>
+        <div class="receipt-summary">
+          <div><span>Subtotal</span><strong id="receiptSubtotal">RM 0.00</strong></div>
+          <div><span>Discount</span><strong id="receiptDiscount">- RM 0.00</strong></div>
+          <div class="receipt-total"><span>TOTAL</span><strong id="receiptTotal">RM 0.00</strong></div>
+        </div>
+        <footer class="receipt-footer">
+          <strong>PLEASE CHECK YOUR ORDER</strong>
+          <span>This is not a payment receipt</span>
+        </footer>
+      </article>
+    </div>
+    <div class="bill-dialog-actions">
+      <button class="bill-back-button" type="button" data-close-dialog>Back to order</button>
+      <button class="bill-print-confirm" id="confirmPrintBill" type="button"><span>▤</span> Print bill</button>
+    </div>
+    <p class="bill-payment-note">Printing this check bill does not complete payment or close the order.</p>
+  </dialog>
+
+  <dialog id="paidReceiptDialog" class="app-dialog bill-dialog paid-receipt-dialog" aria-labelledby="paidReceiptTitle">
+    <div class="dialog-heading bill-dialog-heading">
+      <div><small>PAYMENT COMPLETE</small><h2 id="paidReceiptTitle">Paid receipt</h2></div>
+      <button class="dialog-close" type="button" data-close-dialog aria-label="Close paid receipt">×</button>
+    </div>
+    <div class="bill-preview-shell">
+      <article class="print-receipt" id="paidPrintReceipt">
+        <header class="receipt-header paid">
+          <strong id="paidReceiptShopName">919 RESTAURANT</strong>
+          <span id="paidReceiptKind">Payment receipt</span>
+          <b id="paidReceiptStatus">PAID</b>
+        </header>
+        <div class="receipt-meta">
+          <div><span id="paidReceiptTable">Table —</span><strong id="paidReceiptNumber">Receipt #—</strong></div>
+          <time id="paidReceiptDate"></time>
+          <div><span id="paidReceiptMethod">Payment —</span><strong id="paidReceiptCashier">Cashier —</strong></div>
+        </div>
+        <div class="receipt-columns"><span>Item</span><span>Qty</span><span>Amount</span></div>
+        <div id="paidReceiptItems" class="receipt-items"></div>
+        <div class="receipt-summary">
+          <div><span>Subtotal</span><strong id="paidReceiptSubtotal">RM 0.00</strong></div>
+          <div><span>Discount</span><strong id="paidReceiptDiscount">- RM 0.00</strong></div>
+          <div class="receipt-total"><span>TOTAL</span><strong id="paidReceiptTotal">RM 0.00</strong></div>
+          <div id="paidReceiptTenderRow"><span>Cash received</span><strong id="paidReceiptTender">RM 0.00</strong></div>
+          <div id="paidReceiptChangeRow"><span>Change</span><strong id="paidReceiptChange">RM 0.00</strong></div>
+        </div>
+        <div class="paid-receipt-note" id="paidReceiptNote" hidden></div>
+        <footer class="receipt-footer"><strong>THANK YOU</strong><span id="paidReceiptFooter">Keep this receipt for your records</span></footer>
+      </article>
+    </div>
+    <div class="bill-dialog-actions"><button class="bill-back-button" type="button" data-close-dialog>Close</button><button class="bill-print-confirm" id="printPaidReceipt" type="button"><span>▤</span> Print receipt</button></div>
+    <p class="bill-payment-note">This receipt is saved in payment history and can be reprinted later.</p>
+  </dialog>
+
+  <dialog id="variantDialog" class="app-dialog variant-dialog">
+    <div class="dialog-heading">
+      <div><small data-i18n="chooseOption">CHOOSE AN OPTION</small><h2 id="variantProductName">Tiger</h2></div>
+      <button class="dialog-close" type="button" data-close-dialog>×</button>
+    </div>
+    <div class="variant-body">
+      <p class="variant-instruction" data-i18n="variantHint">Select the size or packaging before adding this product.</p>
+      <div id="variantOptions" class="variant-options"></div>
+      <div class="variant-quantity-row">
+        <div><small data-i18n="quantity">QUANTITY</small><strong data-i18n="howMany">How many?</strong></div>
+        <div class="variant-stepper"><button id="variantMinus" type="button">−</button><b id="variantQuantity">1</b><button id="variantPlus" type="button">＋</button></div>
+      </div>
+      <div class="variant-footer">
+        <div><small data-i18n="lineTotal">LINE TOTAL</small><strong id="variantTotal">RM 10.00</strong></div>
+        <button id="addVariantButton" type="button"><span data-i18n="addToOrder">Add to order</span><b>→</b></button>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog id="simpleDialog" class="app-dialog simple-dialog">
+    <div class="dialog-heading">
+      <div><small id="simpleDialogEyebrow">WORKSPACE</small><h2 id="simpleDialogTitle">Information</h2></div>
+      <button class="dialog-close" type="button" data-close-dialog>×</button>
+    </div>
+    <div class="placeholder-module" id="simpleDialogBody">
+      <div class="placeholder-icon">919</div>
+      <h3>Workspace information</h3>
+      <p>This function is not available in the current workspace.</p>
+    </div>
+  </dialog>
+
+  <dialog id="cashierToolDialog" class="app-dialog cashier-tool-dialog" aria-labelledby="cashierToolTitle">
+    <header class="cashier-tool-heading">
+      <div class="cashier-tool-title">
+        <span class="cashier-tool-mark" aria-hidden="true">919</span>
+        <div><small>CASHIER WORKSPACE</small><h2 id="cashierToolTitle">Cash Center</h2><p>Work here without leaving the current order.</p></div>
+      </div>
+      <button class="dialog-close" type="button" data-close-dialog aria-label="Close cashier window">×</button>
+    </header>
+    <nav class="cashier-tool-tabs" aria-label="Cashier tools">
+      <button type="button" data-cashier-tool-tab="cash"><span>RM</span><b>Cash</b></button>
+      <button type="button" data-cashier-tool-tab="rent"><span>▤</span><b>Rent</b></button>
+      <button type="button" data-cashier-tool-tab="stock"><span>□</span><b>Stock</b></button>
+    </nav>
+    <div class="cashier-tool-frame-shell">
+      <div class="cashier-tool-loading" id="cashierToolLoading" role="status"><span></span><p>Opening cashier tool…</p></div>
+      <iframe id="cashierToolFrame" title="Cashier tool" src="about:blank"></iframe>
+    </div>
+  </dialog>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script src="auth.js?v=20260831-prod2"></script>
+  <script src="app.js?v=20261111"></script>
+</body>
+</html>
